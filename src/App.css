@@ -57,3 +57,22 @@
   opacity: 0.75;
 }
 .task-card.done h3 { text-decoration: line-through; }
+
+.task-card { gap: 12px; }
+.task-card h3 { flex: 1; }
+
+.actions { display: flex; gap: 8px; }
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #2f6fed;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+button:hover { background: #1f4fb8; }
+
+.btn-delete { background: #d64545; }
+.btn-delete:hover { background: #a93232; }
