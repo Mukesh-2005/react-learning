@@ -76,3 +76,16 @@ button:hover { background: #1f4fb8; }
 
 .btn-delete { background: #d64545; }
 .btn-delete:hover { background: #a93232; }
+
+.task-form { display: flex; gap: 10px; }
+
+.task-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #cfd6e4;
+  border-radius: 6px;
+  font-size: 15px;
+}
+.task-form input:focus { outline: 2px solid #2f6fed; border-color: transparent; }
+
+.empty { text-align: center; color: #7b869c; padding: 20px; }
