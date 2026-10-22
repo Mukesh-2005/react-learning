@@ -89,3 +89,34 @@ button:hover { background: #1f4fb8; }
 .task-form input:focus { outline: 2px solid #2f6fed; border-color: transparent; }
 
 .empty { text-align: center; color: #7b869c; padding: 20px; }
+
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+}
+.stat {
+  background: #1f3a5f;
+  color: white;
+  padding: 14px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+.stat span { display: block; font-size: 26px; font-weight: bold; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; }
+.toolbar input {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid #cfd6e4;
+  border-radius: 6px;
+  font-size: 15px;
+}
+.filters { display: flex; gap: 6px; }
+
+.filter-btn { background: #e3e8f4; color: #1f3a5f; }
+.filter-btn:hover { background: #d3dbee; }
+.filter-btn.active { background: #1f3a5f; color: white; }

@@ -1,17 +1,30 @@
 import { useState } from "react";
 import "./App.css";
 
-function Header({ tasks }) {
-  const name = "Mukesh";
+const FILTERS = [
+  { value: "all", label: "All" },
+  { value: "pending", label: "Pending" },
+  { value: "done", label: "Completed" }
+];
 
+function Header() {
   return (
     <header className="header">
       <h1>My Task Manager</h1>
-      <p>
-        Completed: {tasks.filter(function (t) { return t.done; }).length} / {tasks.length}
-      </p>
-      <div className="profile">Admin: {name}</div>
+      <div className="profile">Admin</div>
     </header>
+  );
+}
+
+function Stats({ tasks }) {
+  const doneCount = tasks.filter(function (t) { return t.done; }).length;
+
+  return (
+    <div className="stats">
+      <div className="stat"><span>{tasks.length}</span> Total</div>
+      <div className="stat"><span>{tasks.length - doneCount}</span> Pending</div>
+      <div className="stat"><span>{doneCount}</span> Completed</div>
+    </div>
   );
 }
 
@@ -19,11 +32,11 @@ function TaskForm({ onAdd }) {
   const [text, setText] = useState("");
 
   function handleSubmit(event) {
-    event.preventDefault();               // no page reload
+    event.preventDefault();
     const trimmed = text.trim();
-    if (trimmed === "") return;           // ignore empty input
-    onAdd(trimmed);                       // ask App to add it
-    setText("");                          // clear the box
+    if (trimmed === "") return;
+    onAdd(trimmed);
+    setText("");
   }
 
   return (
@@ -39,10 +52,36 @@ function TaskForm({ onAdd }) {
   );
 }
 
+function Toolbar({ search, onSearch, filter, onFilter }) {
+  return (
+    <div className="toolbar">
+      <input
+        type="text"
+        value={search}
+        onChange={function (event) { onSearch(event.target.value); }}
+        placeholder="Search tasks..."
+      />
+      <div className="filters">
+        {FILTERS.map(function (f) {
+          return (
+            <button
+              key={f.value}
+              className={filter === f.value ? "filter-btn active" : "filter-btn"}
+              onClick={function () { onFilter(f.value); }}
+            >
+              {f.label}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function TaskCard({ id, text, done, onToggle, onDelete }) {
   return (
     <div className={done ? "task-card done" : "task-card"}>
-      <h3>#{id} {text}</h3>
+      <h3>{text}</h3>
       <span className={done ? "badge completed" : "badge pending"}>
         {done ? "Completed" : "Pending"}
       </span>
@@ -73,6 +112,8 @@ function App() {
     { id: 2, text: "Build a responsive website", done: false }
   ]);
   const [nextId, setNextId] = useState(3);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
   function addTask(text) {
     setTasks([...tasks, { id: nextId, text: text, done: false }]);
@@ -94,17 +135,38 @@ function App() {
     }));
   }
 
+  // derived data: calculated on every render, NOT stored in state
+  const visibleTasks = tasks
+    .filter(function (t) {
+      if (filter === "pending") return !t.done;
+      if (filter === "done") return t.done;
+      return true;
+    })
+    .filter(function (t) {
+      return t.text.toLowerCase().includes(search.toLowerCase());
+    });
+
   return (
     <div>
-      <Header tasks={tasks} />
+      <Header />
       <main className="main">
+        <Stats tasks={tasks} />
         <TaskForm onAdd={addTask} />
+        <Toolbar
+          search={search}
+          onSearch={setSearch}
+          filter={filter}
+          onFilter={setFilter}
+        />
 
         {tasks.length === 0 && (
           <p className="empty">No tasks yet. Add one above.</p>
         )}
+        {tasks.length > 0 && visibleTasks.length === 0 && (
+          <p className="empty">No tasks match your search or filter.</p>
+        )}
 
-        {tasks.map(function (t) {
+        {visibleTasks.map(function (t) {
           return (
             <TaskCard
               key={t.id}
